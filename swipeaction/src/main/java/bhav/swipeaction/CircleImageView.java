@@ -25,6 +25,8 @@ class CircleImageView extends ImageView {
     private static final int SHADOW_ELEVATION = 4;
     private Animation.AnimationListener mListener;
 
+
+    //todo : add more shapes maybe?
     public CircleImageView(Context context, int color) {
         super(context);
         final float density = getContext().getResources().getDisplayMetrics().density;

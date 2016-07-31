@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         swipe = (SwipeAction) findViewById(R.id.swipe);
 
+//        swipe.setIcon(getDrawable(R.drawable.ic_back));
+
         swipe.addOnPullListener(new SwipeAction.OnPullListener() {
             @Override
             public void onPull() {

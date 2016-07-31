@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwipeAction">
+        <attr name="src" format="reference"/>
+        <attr name="iconPaddingTop" format="dimension|reference"/>
+        <attr name="iconPaddingBottom" format="dimension|reference"/>
+        <attr name="iconPaddingLeft" format="dimension|reference"/>
+        <attr name="iconPaddingRight" format="dimension|reference"/>
+    </declare-styleable>
+</resources>

@@ -1,8 +1,20 @@
+/*
+ *              Apache License
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package bhav.swipeaction;
 
-/**
- * Created by bhav on 7/31/16 for the SwipeActionDemo Project.
- */
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -27,12 +39,16 @@ import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
 /**
- * Created by bhav on 7/30/16 for the TheDailyBitsian Project.
- * Swipe to Action.
+ * Swipe Down for action.
  */
 public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         NestedScrollingChild {
+
     private static final String TAG = SwipeAction.class.getSimpleName();
+    private final static int DEF_PADDING_BOTTOM = 24;
+    private final static int DEF_PADDING_TOP = 24;
+    private final static int DEF_PADDING_START = 24;
+    private final static int DEF_PADDING_END = 24;
     private static final int MAX_ALPHA = 255;
     private static final int STARTING_PROGRESS_ALPHA = (int) (.3f * MAX_ALPHA);
     private static final int CIRCLE_DIAMETER = 40;
@@ -50,16 +66,26 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private static final int CIRCLE_BG_LIGHT = 0xFFFAFAFA;
     // Default offset in dips from the top of the view to where the progress spinner should stop
     private static final int DEFAULT_CIRCLE_TARGET = 64;
-    private static final int[] LAYOUT_ATTRS = new int[]{
-            android.R.attr.enabled
-    };
+    //todo : dis v.
+//    private static final int[] LAYOUT_ATTRS = new int[]{
+//            android.R.attr.enabled
+//    };
     private final NestedScrollingParentHelper mNestedScrollingParentHelper;
     private final NestedScrollingChildHelper mNestedScrollingChildHelper;
+
     private final int[] mParentScrollConsumed = new int[2];
     private final int[] mParentOffsetInWindow = new int[2];
+
     private final DecelerateInterpolator mDecelerateInterpolator;
+
     protected int mFrom;
     protected int mOriginalOffsetTop;
+
+    private int iconPaddingRight = 0;
+    private int iconPaddingLeft = 0;
+    private int iconPaddingTop = 0;
+    private int iconPaddingBottom = 0;
+
     private Drawable search;
     private View mTarget; // the target of the gesture
     private OnPullListener mListener;
@@ -170,9 +196,14 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
                 android.R.integer.config_mediumAnimTime);
         setWillNotDraw(false);
         mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
-        final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
-        setEnabled(a.getBoolean(0, true));
-        a.recycle();
+        initStyle(context, attrs);
+//        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeAction);
+////        setEnabled(a.getBoolean(0, true));
+//        search = a.getDrawable(R.styleable.SwipeAction_src);
+////        if(search == null) {
+////            search = getResources().getDrawable(android.R.drawable.ic_delete);
+////        }
+//        a.recycle();
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         mCircleWidth = (int) (CIRCLE_DIAMETER * metrics.density);
         mCircleHeight = (int) (CIRCLE_DIAMETER * metrics.density);
@@ -288,22 +319,39 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         }
     }
 
-    /**
-     * Pre API 11, alpha is used to make the progress circle appear instead of scale.
-     */
-//    private boolean isAlphaUsedForScale() {
-//        return android.os.Build.VERSION.SDK_INT < 11;
-//    }
     private void createProgressView() {
         mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT);
-        search = getContext().getDrawable(android.R.drawable.ic_delete);
-//        mProgress = new MaterialSearchDrawable(getContext(), this);
-//        mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
         mCircleView.setImageDrawable(search);
-        mCircleView.setPadding(24, 24, 24, 24);
+        mCircleView.setPadding(iconPaddingLeft, iconPaddingTop, iconPaddingRight, iconPaddingBottom);
         mCircleView.setVisibility(View.GONE);
         addView(mCircleView);
     }
+
+    //todo : add functionality v.
+//    /**
+//     * Set the icon inside {@link #mCircleView}
+//     *
+//     * @param icon Drawable to set as icon
+//     */
+//    public void setIcon(Drawable icon) {
+//        search = icon;
+//    }
+//
+//    public void setIconPaddingBottom(int iconPaddingBottom) {
+//        this.iconPaddingBottom = iconPaddingBottom;
+//    }
+//
+//    public void setIconPaddingEnd(int iconPaddingRight) {
+//        this.iconPaddingRight = iconPaddingRight;
+//    }
+//
+//    public void setIconPaddingStart(int iconPaddingLeft) {
+//        this.iconPaddingLeft = iconPaddingLeft;
+//    }
+//
+//    public void setIconPaddingTop(int iconPaddingTop) {
+//        this.iconPaddingTop = iconPaddingTop;
+//    }
 
     /**
      * Set the listener to be notified when a refresh is triggered via the swipe
@@ -360,13 +408,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         mCircleView.startAnimation(mScaleAnimation);
     }
 
-    /**
-     * Pre API 11, this does an alpha animation.
-     *
-     * @param progress
-     */
     private void setAnimationProgress(float progress) {
-
         ViewCompat.setScaleX(mCircleView, progress);
         ViewCompat.setScaleY(mCircleView, progress);
 
@@ -433,7 +475,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
      * color will also be the color of the bar that grows in response to a user
      * swipe gesture.
      *
-     * @param iconColor Color of the icon
+     * @param iconColor       Color of the icon
      * @param backgroundColor Color of the background disc
      */
     @ColorInt
@@ -957,8 +999,28 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         }
     }
 
+    private void initStyle(Context context, AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeAction);
+        if (a != null) {
+            if (a.hasValue(R.styleable.SwipeAction_src)) {
+                search = a.getDrawable(R.styleable.SwipeAction_src);
+            } else {
+                //default back to available icon
+                search = getResources().getDrawable(android.R.drawable.ic_delete);
+            }
+            iconPaddingBottom = Math.round(a.getDimension(R.styleable.SwipeAction_iconPaddingBottom,
+                    DEF_PADDING_BOTTOM));
+            iconPaddingTop = Math.round(a.getDimension(R.styleable.SwipeAction_iconPaddingTop,
+                    DEF_PADDING_TOP));
+            iconPaddingLeft = Math.round(a.getDimension(R.styleable.SwipeAction_iconPaddingLeft,
+                    DEF_PADDING_START));
+            iconPaddingRight = Math.round(a.getDimension(R.styleable.SwipeAction_iconPaddingRight,
+                    DEF_PADDING_END));
+            a.recycle();
+        }
+    }
+
     /**
-     * Created by bhav on 7/31/16 for the TheDailyBitsian Project.
      * Classes that wish to be notified when the swipe gesture correctly
      * triggers a refresh should implement this interface.
      */
