@@ -20,6 +20,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
@@ -152,7 +153,6 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-            Log.d(TAG, "onAnimationStart: ");
         }
 
         @Override
@@ -345,7 +345,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         mCircleView.setBackgroundShape(shape);
     }
 
-    public void setBackgroundColor(int colorRes) {
+    public void setBackgroundColor(@ColorRes int colorRes) {
         mCircleView.setBackgroundColor(colorRes);
     }
 

@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         final Shape rect = new RectShape();
         final Shape circ = new OvalShape();
 
+        swipe.setBackgroundColor(R.color.colorAccent);
+
         swipe.addOnPullListener(new SwipeAction.OnPullListener() {
             @Override
             public void onPull() {

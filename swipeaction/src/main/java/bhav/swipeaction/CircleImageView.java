@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.Shape;
+import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.animation.Animation;
@@ -68,7 +69,7 @@ class CircleImageView extends ImageView {
     /**
      * Update the background color of the circle image view.
      */
-    public void setBackgroundColor(int colorRes) {
+    public void setBackgroundColor(@ColorRes int colorRes) {
         if (getBackground() instanceof ShapeDrawable) {
             ((ShapeDrawable) getBackground())
                     .getPaint()
