@@ -7,6 +7,8 @@ package bhav.swipeaction;
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.Shape;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -70,7 +72,16 @@ class CircleImageView extends ImageView {
         if (getBackground() instanceof ShapeDrawable) {
             ((ShapeDrawable) getBackground())
                     .getPaint()
-                    .setColor(getResources().getColor(colorRes));
+                    .setColor(ContextCompat.getColor(getContext(), colorRes));
+        }
+    }
+
+    /**
+     * Update the shape of the image view
+     */
+    public void setBackgroundShape(Shape shape) {
+        if(getBackground() instanceof ShapeDrawable) {
+            ((ShapeDrawable) getBackground()).setShape(shape);
         }
     }
 }

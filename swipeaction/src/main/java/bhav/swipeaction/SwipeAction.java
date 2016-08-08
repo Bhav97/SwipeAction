@@ -18,6 +18,7 @@ package bhav.swipeaction;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.ColorInt;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -45,6 +46,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         NestedScrollingChild {
 
     private static final String TAG = SwipeAction.class.getSimpleName();
+
     private final static int DEF_PADDING_BOTTOM = 24;
     private final static int DEF_PADDING_TOP = 24;
     private final static int DEF_PADDING_START = 24;
@@ -86,7 +88,8 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private int iconPaddingTop = 0;
     private int iconPaddingBottom = 0;
 
-    private Drawable search;
+    private Drawable icon;
+
     private View mTarget; // the target of the gesture
     private OnPullListener mListener;
     private boolean mRefreshing = false;
@@ -149,6 +152,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
+            Log.d(TAG, "onAnimationStart: ");
         }
 
         @Override
@@ -159,7 +163,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         public void onAnimationEnd(Animation animation) {
             if (mRefreshing) {
                 // Make sure the progress view is fully visible
-                search.setAlpha(MAX_ALPHA);
+//                icon.setAlpha(MAX_ALPHA);
 //                mProgress.setAlpha(MAX_ALPHA);
 //                mProgress.start();
                 if (mNotify) {
@@ -199,12 +203,13 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         initStyle(context, attrs);
 //        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeAction);
 ////        setEnabled(a.getBoolean(0, true));
-//        search = a.getDrawable(R.styleable.SwipeAction_src);
-////        if(search == null) {
-////            search = getResources().getDrawable(android.R.drawable.ic_delete);
+//        icon = a.getDrawable(R.styleable.SwipeAction_src);
+////        if(icon == null) {
+////            icon = getResources().getDrawable(android.R.drawable.ic_delete);
 ////        }
 //        a.recycle();
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        //todo : changeable size v.
         mCircleWidth = (int) (CIRCLE_DIAMETER * metrics.density);
         mCircleHeight = (int) (CIRCLE_DIAMETER * metrics.density);
         createProgressView();
@@ -260,7 +265,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private void setColorViewAlpha(int targetAlpha) {
         mCircleView.getBackground().setAlpha(targetAlpha);
 //        mProgress.setAlpha(targetAlpha);
-        search.setAlpha(targetAlpha);
+//        icon.setAlpha(targetAlpha);
     }
 
     /**
@@ -321,37 +326,47 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
 
     private void createProgressView() {
         mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT);
-        mCircleView.setImageDrawable(search);
+        mCircleView.setImageDrawable(icon);
         mCircleView.setPadding(iconPaddingLeft, iconPaddingTop, iconPaddingRight, iconPaddingBottom);
         mCircleView.setVisibility(View.GONE);
         addView(mCircleView);
     }
 
-    //todo : add functionality v.
-//    /**
-//     * Set the icon inside {@link #mCircleView}
-//     *
-//     * @param icon Drawable to set as icon
-//     */
-//    public void setIcon(Drawable icon) {
-//        search = icon;
-//    }
+    /**
+     * Set the icon inside {@link #mCircleView}
+     *
+     * @param icon Drawable to set as icon
+     */
+    public void setIcon(Drawable icon) {
+        mCircleView.setImageDrawable(icon);
+    }
+
+    public void setBackgroundShape(Shape shape) {
+        mCircleView.setBackgroundShape(shape);
+    }
+
+    public void setBackgroundColor(int colorRes) {
+        mCircleView.setBackgroundColor(colorRes);
+    }
+
+    // todo : add custom view
+//    public void setCustomView(View customView) {
 //
-//    public void setIconPaddingBottom(int iconPaddingBottom) {
-//        this.iconPaddingBottom = iconPaddingBottom;
 //    }
-//
-//    public void setIconPaddingEnd(int iconPaddingRight) {
-//        this.iconPaddingRight = iconPaddingRight;
-//    }
-//
-//    public void setIconPaddingStart(int iconPaddingLeft) {
-//        this.iconPaddingLeft = iconPaddingLeft;
-//    }
-//
-//    public void setIconPaddingTop(int iconPaddingTop) {
-//        this.iconPaddingTop = iconPaddingTop;
-//    }
+
+    public void setPadding(int iconPaddingLeft, int iconPaddingTop,
+                           int iconPaddingRight, int iconPaddingBottom) {
+        mCircleView.setPadding(
+                iconPaddingLeft,
+                iconPaddingTop,
+                iconPaddingRight,
+                iconPaddingBottom
+        );
+    }
+
+    public boolean isActing() {
+        return mRefreshing;
+    }
 
     /**
      * Set the listener to be notified when a refresh is triggered via the swipe
@@ -392,7 +407,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
             // progress circle appearing.
             // Don't adjust the alpha during appearance otherwise.
 //            mProgress.setAlpha(MAX_ALPHA);
-            search.setAlpha(MAX_ALPHA);
+//            icon.setAlpha(MAX_ALPHA);
         }
         mScaleAnimation = new Animation() {
             @Override
@@ -441,11 +456,11 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     }
 
     private void startProgressAlphaStartAnimation() {
-        mAlphaStartAnimation = startAlphaAnimation(search.getAlpha(), STARTING_PROGRESS_ALPHA);
+        mAlphaStartAnimation = startAlphaAnimation(icon.getAlpha(), STARTING_PROGRESS_ALPHA);
     }
 
     private void startProgressAlphaMaxAnimation() {
-        mAlphaMaxAnimation = startAlphaAnimation(search.getAlpha(), MAX_ALPHA);
+        mAlphaMaxAnimation = startAlphaAnimation(icon.getAlpha(), MAX_ALPHA);
     }
 
     private Animation startAlphaAnimation(final int startingAlpha, final int endingAlpha) {
@@ -457,9 +472,9 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         Animation alpha = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime, Transformation t) {
-                search
-                        .setAlpha((int) (startingAlpha + ((endingAlpha - startingAlpha)
-                                * interpolatedTime)));
+//                icon
+//                        .setAlpha((int) (startingAlpha + ((endingAlpha - startingAlpha)
+//                                * interpolatedTime)));
             }
         };
         alpha.setDuration(ALPHA_ANIMATION_DURATION);
@@ -503,7 +518,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     /**
      * Set the distance to trigger a sync in dips
      *
-     * @param distance Distance in px to trigger sync
+     * @param distance Distance in dips to trigger sync
      */
     public void setDistanceToTriggerSync(int distance) {
         mTotalDragDistance = distance;
@@ -608,7 +623,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
                     mInitialMotionY = mInitialDownY + mTouchSlop;
                     mIsBeingDragged = true;
 //                    mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
-                    search.setAlpha(STARTING_PROGRESS_ALPHA);
+//                    icon.setAlpha(STARTING_PROGRESS_ALPHA);
                 }
                 break;
             case MotionEventCompat.ACTION_POINTER_UP:
@@ -793,7 +808,7 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
     private void moveSpinner(float overscrollTop) {
         float originalDragPercent = overscrollTop / mTotalDragDistance;
         float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
-//        float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
+        float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
         float extraOS = Math.abs(overscrollTop) - mTotalDragDistance;
         float slingshotDist = mUsingCustomStart ? mSpinnerFinalOffset - mOriginalOffsetTop
                 : mSpinnerFinalOffset;
@@ -815,19 +830,20 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
             if (mScale) {
                 setAnimationProgress(overscrollTop / mTotalDragDistance);
             }
-            if (search.getAlpha() > STARTING_PROGRESS_ALPHA
+            if (icon.getAlpha() > STARTING_PROGRESS_ALPHA
                     && !isAnimationRunning(mAlphaStartAnimation)) {
                 // Animate the alpha
                 startProgressAlphaStartAnimation();
             }
         } else {
-            if (search.getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
+            if (icon.getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
                 // Animate the alpha
                 startProgressAlphaMaxAnimation();
             }
         }
-//        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2)*<<>>;
-        search.setAlpha(255);
+        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2)* .5f;
+//        icon.setAlpha(255);
+        mCircleView.animate().rotation(rotation);
         setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop);
     }
 
@@ -1003,10 +1019,10 @@ public class SwipeAction extends ViewGroup implements NestedScrollingParent,
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeAction);
         if (a != null) {
             if (a.hasValue(R.styleable.SwipeAction_src)) {
-                search = a.getDrawable(R.styleable.SwipeAction_src);
+                icon = a.getDrawable(R.styleable.SwipeAction_src);
             } else {
                 //default back to available icon
-                search = getResources().getDrawable(android.R.drawable.ic_delete);
+                icon = getResources().getDrawable(android.R.drawable.ic_delete);
             }
             iconPaddingBottom = Math.round(a.getDimension(R.styleable.SwipeAction_iconPaddingBottom,
                     DEF_PADDING_BOTTOM));
