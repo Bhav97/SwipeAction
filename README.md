@@ -18,7 +18,7 @@ and:
 
 ```gradle
 dependencies {
-        compile 'com.github.Bhav97:SwipeAction:v0.1.1-alpha'
+        compile 'com.github.Bhav97:SwipeAction:v0.2.0'
 }
 ```
 ## Usage
