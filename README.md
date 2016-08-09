@@ -5,6 +5,9 @@
 SwipeAction is an android library that helps you create custom pull down actions.
 It is based on the SwipeRefreshLayout.
 
+![gif of SA]
+(https://i.imgur.com/VqaKBnp.gif)
+
 Add it to your build.gradle with:
 ```gradle
 allprojects {
@@ -22,6 +25,25 @@ dependencies {
 }
 ```
 ## Usage
+
+Wrap the content you want pull actions on inside the sipeaction tags.
+
+
+__JAVA:__
+
+```java
+SwipeAction swipe;
+swipe = (SwipeAction) findViewById(R.id.swipe);
+
+swipe.setIcon(getDrawable(R.id.wut)); //change icons programmatically
+swipe.setBackgroundColor(R.color.green_light); // change the background color
+swipe.setBackgroundshape(new RectShape()); // The circle had no point
+swipe.setWorking(true); // It's the setRefreshing() method from SWL
+swipe.setPadding(4/*left*/, 5/*top*/, 6/*right*/, 7/*bottom*/); // Too much padding may kill the icon
+
+if(swipe.isActing()) Log.d(TAG, "Working!"); // returns true if the layout has been pulled down, and is still visible
+
+```
 
 __XML:__
 
